@@ -2,14 +2,6 @@
     "name": "wasksofts-technology/mpesa_v2",
     "description": "A simple Mpesa API library.",
     "type": "library",
-    "autoload": {
-        "psr-4": {
-            "Wasksofts\\Mpesa\\v2\\": "src/"
-        }
-    },
-    "require": {
-        "php": ">=7.0"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -17,9 +9,12 @@
             "email": "mukamanusteven@gmail.com"
         }
     ],
+     "require": {
+        "php": ">=7.0"
+    },
     "autoload": {
         "psr-4": {
-            "Wasksofts\\Mpesa\\": "src"
+            "Wasksofts\\Mpesa\\v2\\": "src/"
         }
     },
     "extra": {
