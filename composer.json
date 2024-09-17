@@ -4,7 +4,7 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Wasksofts\\Mpesa\\": "src/"
+            "Wasksofts\\Mpesa\\v2\\": "src/"
         }
     },
     "require": {
@@ -16,5 +16,16 @@
             "name": "Steven Kamanu",
             "email": "mukamanusteven@gmail.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Wasksofts\\Mpesa\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "v1.0-dev"
+        }
+    },
+    "minimum-stability": "stable"
 }
