@@ -1,6 +1,6 @@
 <?php
 
-namespace Wasksofts\Mpesa;
+namespace Wasksofts\Mpesa\v2;
 
 date_default_timezone_set("Africa/Nairobi");
 
@@ -419,18 +419,18 @@ class Mpesa
      * 
      * @return  null
      */
-    public function tax_remittance($amount, $account, $result_url = 'tax', $timeout_url = 'tax', $Remarks = "OK", $kra_paybill = "572572")
+    public function tax_remittance($amount, $account_prn, $result_url = 'tax', $timeout_url = 'tax', $Remarks = "OK", $kra_paybill = "572572")
     {
         $curl_post_data = array(
             "Initiator" => $this->initiator_name,
             "SecurityCredential" => $this->security_credential(),
             "CommandID" => "PayTaxToKRA",
-            "SenderIdentifierType" => "4",
-            "RecieverIdentifierType" => "4",
             "Amount" => $amount,
-            "PartyA" => $this->store_number,
+            "AccountReference" => $account_prn,
+            "SenderIdentifierType" => strtolower($this->transaction_type) === 'paybill' ? "4" : "2",
+            "RecieverIdentifierType" => "4",
+            "PartyA" => strtolower($this->transaction_type) === 'paybill' ? $this->shortcode : $this->store_number,
             "PartyB" => $kra_paybill,
-            "AccountReference" => $account,
             "Remarks" => $Remarks,
             'ResultURL' => $this->result_url . $result_url,
             'QueueTimeOutURL' => $this->timeout_url . $timeout_url,
