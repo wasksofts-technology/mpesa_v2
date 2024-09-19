@@ -18,7 +18,7 @@ $mpesa->config('security_credential', '');
 $mpesa->config('result_url', 'https://example.com/webhook.php&type=result_url');
 $mpesa->config('timeout_url', 'https://example.com/webhook.php&type=timeout_url');
 $mpesa->config('logo_link', 'https://example.com/logo.png');
-$mpesa->config('official_contact', '254716224372');
+$mpesa->config('official_contact', '25412345678');
 $mpesa->config('env', 'production'); //sandbox
 
 echo $mpesa->oauth_token();
