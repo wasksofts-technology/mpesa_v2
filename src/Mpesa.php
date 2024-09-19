@@ -1,6 +1,6 @@
 <?php
 
-namespace Wasksofts\Mpesa\v2;
+namespace Wasksofts\Mpesa_v2;
 
 date_default_timezone_set("Africa/Nairobi");
 
@@ -119,19 +119,19 @@ class Mpesa
         $url = $this->env('oauth/v1/generate?grant_type=client_credentials');
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
-        $credentials = base64_encode($this->consumer_key . ':' . $this->consumer_secret);
-
-        //setting a custom header      
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Authorization: Basic ' . $credentials)); //setting a custom header
-        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Authorization: Basic ' . base64_encode($this->consumer_key . ':' . $this->consumer_secret)]);
+        curl_setopt($curl, CURLOPT_HEADER, FALSE);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
 
         $curl_response = curl_exec($curl);
+        if (curl_errno($curl)) {
+            return curl_error($curl);
+        }
+        curl_close($curl);
+
         if ($curl_response == true) {
             return json_decode($curl_response)->access_token;
-        } else {
-            return curl_error($curl);
         }
     }
 
@@ -170,10 +170,9 @@ class Mpesa
      */
     public function STKPush($Amount, $phoneNumberSendingFund, $AccountReference, $TransactionDesc)
     {
-
         //Fill in the request parameters with valid values     
         $curl_post_data = array(
-            'BusinessShortCode' => strtolower($this->transaction_type) == 'paybill' ? $this->shortcode : $this->store_number,
+            'BusinessShortCode' => strtolower($this->transaction_type) === "paybill" ? $this->shortcode : $this->store_number,
             'Password' => $this->password(),
             'Timestamp' => $this->timestamp(),
             'TransactionType' => $this->transactionType(),
@@ -187,7 +186,8 @@ class Mpesa
         );
 
         $url =  $this->env('mpesa/stkpush/v1/processrequest');
-        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+        $header = ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()];
+        return $this->http_post($url, $header, $curl_post_data);
     }
 
     /**  transactionType
@@ -223,7 +223,8 @@ class Mpesa
         );
 
         $url =  $this->env('mpesa/stkpushquery/v1/query');
-        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+        $header = ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()];
+        $this->http_post($url, $header, $curl_post_data);
     }
 
     /** reverses a B2B ,B2C or C2B Mpesa,transaction
@@ -364,7 +365,7 @@ class Mpesa
      * @param   string  $Ocassion
      * @return  null
      */
-    public function transaction_status($TransactionID,  $Remarks, $result_url, $timeout_url, $indentifier = 2, $Occassion = NULL)
+    public function transaction_status($TransactionID,  $Remarks, $result_url = "transaction_status", $timeout_url = "transaction_status", $indentifier = 2, $Occassion = NULL)
     {
         $curl_post_data = array(
             'Initiator' => $this->initiator_name,
@@ -440,21 +441,21 @@ class Mpesa
         $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
     }
 
-
     /** query function
      * 
      * @param  $url
-     * @param  $curl_post_data
+     * @param  $header
+     * @param  $$body
      * @return  null
      */
-    public function http_post($url, $header, $curl_post_data)
+    public function http_post($url, array $header, array $body)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header); //array()
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($curl_post_data));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
 
         $curl_response = curl_exec($curl);
@@ -463,6 +464,7 @@ class Mpesa
         } else {
             $this->msg = curl_error($curl);
         }
+        curl_close($curl);
     }
 
     /** get environment url
@@ -490,7 +492,7 @@ class Mpesa
      */
     public function password()
     {
-        $Merchant_id = trim($this->store_number);
+        $Merchant_id = trim(strtolower($this->transaction_type) === "paybill" ? $this->shortcode : $this->store_number);
         $passkey =  trim($this->pass_key);
         $password =  base64_encode($Merchant_id . $passkey . $this->timestamp());
 
