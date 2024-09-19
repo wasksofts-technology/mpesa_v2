@@ -8,7 +8,7 @@ date_default_timezone_set("Africa/Nairobi");
  * Mpesa API library
  *
  * @package     Mpesa Class
- * @version     1.0
+ * @version     1.0.5
  * @license     MIT License Copyright (c) 2017 Wasksofts Technology
  */
 class Mpesa
@@ -22,7 +22,7 @@ class Mpesa
     private $store_number;
     private $pass_key;
     private $initiator_name;
-    private $initiator_pass;
+    private $initiator_password;
     private $callback_url;
     private $confirmation_url;
     private $validation_url;
@@ -30,6 +30,8 @@ class Mpesa
     private $b2b_shortcode;
     private $result_url;
     private $timeout_url;
+    private $official_contact;
+    private $logo_link;
     private $live_endpoint;
     private $sandbox_endpoint;
     private $env;
@@ -75,8 +77,8 @@ class Mpesa
             case 'initiator_name':
                 $this->initiator_name = trim($value);
                 break;
-            case 'initiator_pass':
-                $this->initiator_pass = trim($value);
+            case 'initiator_password':
+                $this->initiator_password = trim($value);
                 break;
             case 'pass_key':
                 $this->pass_key = trim($value);
@@ -98,6 +100,15 @@ class Mpesa
                 break;
             case 'timeout_url':
                 $this->timeout_url = $value;
+                break;
+            case 'official_contact':
+                $this->official_contact = $value;
+                break;
+            case 'logo_link':
+                $this->logo_link = $value;
+                break;
+            case 'callback_url':
+                $this->callback_url = $value;
                 break;
             case 'env':
                 $this->env = $value;
@@ -326,8 +337,6 @@ class Mpesa
         $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()],  $curl_post_data);
     }
 
-
-
     /** Account Balance API request for account balance of a shortcode
      * 
      * @access  public
@@ -365,7 +374,7 @@ class Mpesa
      * @param   string  $Ocassion
      * @return  null
      */
-    public function transaction_status($TransactionID,  $Remarks, $result_url = "transaction_status", $timeout_url = "transaction_status", $indentifier = 2, $Occassion = NULL)
+    public function transaction_status($TransactionID,  $Remarks, $indentifier = 4, $result_url = "transaction_status", $timeout_url = "transaction_status", $Occassion = NULL)
     {
         $curl_post_data = array(
             'Initiator' => $this->initiator_name,
@@ -395,7 +404,7 @@ class Mpesa
      * @param Amount  
      * @return Qrformart
      */
-    public function generate_qrcode($amount, $reference, $MerchantName = 'SERVICE', $qrformat = 1, $trxcode = 'BG')
+    public function generate_qrcode($amount, $reference, $MerchantName = 'SERVICE', $qrformat = 1, $trxcode = 'PG')
     {
         $curl_post_data = array(
             "QRVersion" => "01",
@@ -438,6 +447,162 @@ class Mpesa
         );
 
         $url = $this->env('mpesa/b2b/v1/remittax');
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+
+
+    //-------------------------------------------------------------------------------------------------------------------------------------
+    //Bill manager
+
+    /**
+     * Business to optin to biller manager
+     * 
+     * This is the first API used to opt you as a biller to our bill manager features. 
+     * Once you integrate to this API and send a request with a success response, 
+     * your shortcode is whitelisted and you are able to integrate with all the other remaining bill manager APIs.
+     * 
+     * @param $email ,$reminder
+     * @return array
+     */
+    public function optin_biller($email, $reminders = 1)
+    {
+        $url =  $this->env('v1/billmanager-invoice/change-optin-details');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "shortcode" => $this->shortcode,
+            "logo" => $this->logo_link,
+            "email" => $email,
+            "officialContact" => $this->official_contact,
+            "sendReminders" => $reminders,
+            "callbackUrl" =>  $this->callback_url
+        );
+
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+    /** 
+     * Modify Onboarding Details
+     * This API allows you to update the Onboarding fields. 
+     * These are the fields you can update
+     * 
+     */
+    public function optin_update($email, $reminders = 1)
+    {
+        $url =  $this->env('v1/billmanager-invoice/optin');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "shortcode" => $this->shortcode,
+            "logo" => $this->logo_link,
+            "email" => $email,
+            "officialContact" => $this->official_contact,
+            "sendReminders" => $reminders,
+            "callbackUrl" =>  $this->callback_url
+        );
+
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+    /**
+     * Bill Manager invoicing service enables you to create and send e-invoices to your customers.
+     * Single invoicing functionality will allow you to send out customized individual e-invoices 
+     * Your customers will receive this notification(s) via an SMS to the Safaricom phone number specified while creating the invoice.
+     */
+    public function single_invoice($reference, $billedfullname, $billedphoneNumber, $billedperiod, $invoiceName, $dueDate, $accountRef, $amount)
+    {
+        $url =  $this->env('v1/billmanager-invoice/single-invoicing');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "externalReference" => $reference,
+            "billedFullName" => $billedfullname,
+            "billedPhoneNumber" => $billedphoneNumber,
+            "billedPeriod" => $billedperiod,
+            "invoiceName" => $invoiceName,
+            "dueDate" => $dueDate,
+            "accountReference" => $accountRef,
+            "amount" => $amount
+        );
+
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+    /**   
+     * Bulk invoicing
+     *  while bulk invoicing allows you to send multiple invoices.
+     * 
+     * @param array
+     */
+    public function bulk_invoicing($invoiceArray)
+    {
+        $url =  $this->env('v1/billmanager-invoice/bulk-invoicing');
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $invoiceArray);
+    }
+
+    /**
+     * Reconciliation
+     * 
+     * @param  string
+     * @return array
+     */
+    public function reconciliation($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+    {
+        $url =  $this->env('v1/billmanager-invoice/reconciliation');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "paymentDate" => $payment_date,
+            "paidAmount" => $paidAmmount,
+            "accountReference" => $actReference,
+            "transactionId" => $transactionId,
+            "phoneNumber" => $phoneNumber,
+            "fullName" => $fullName,
+            "invoiceName" => $invoiceName,
+            "externalReference" => $reference
+        );
+
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+    /**
+     * 
+     *  Update invoice API allows you to alter invoice items by using the external reference previously used to create the invoice you want to update.
+     *  Any other update on the invoice can be done by using the Cancel Invoice API which will recall the invoice,
+     *  then a new invoice can be created. The following changes can be done using the Update Invoice API
+     * 
+     */
+
+    public function update_invoice_data($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+    {
+        $url =  $this->env('v1/billmanager-invoice/change-invoice');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "paymentDate" => $payment_date,
+            "paidAmount" => $paidAmmount,
+            "accountReference" => $actReference,
+            "transactionId" => $transactionId,
+            "phoneNumber" => $phoneNumber,
+            "fullName" => $fullName,
+            "invoiceName" => $invoiceName,
+            "externalReference" => $reference
+        );
+
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
+
+
+    public function cancel_single_invoice($reference)
+    {
+        $url =  $this->env('v1/billmanager-invoice/cancel-single-invoice');
+
+        //Fill in the request parameters 
+        $curl_post_data = array(
+            "externalReference" => $reference
+        );
+
         $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
     }
 
@@ -517,8 +682,9 @@ class Mpesa
      */
     public function security_credential()
     {
-        $publicKey =  $this->env === "sandbox" ? file_get_contents(__DIR__ . '/SandboxCertificate.cer') : file_get_contents(__DIR__ . '/ProductionCertificate.cer');
-        openssl_public_encrypt($this->initiator_pass, $encrypted, $publicKey, OPENSSL_PKCS1_PADDING);
+        $publicKey =  $this->env === "production" ? file_get_contents(__DIR__ . '/ProductionCertificate.cer') : file_get_contents(__DIR__ . '/SandboxCertificate.cer');
+        $publicKeyResource = openssl_pkey_get_public($publicKey);
+        openssl_public_encrypt($this->initiator_password, $encrypted, $publicKeyResource, OPENSSL_PKCS1_PADDING);
         return is_null($this->security_credential) ? base64_encode($encrypted) : $this->security_credential;
     }
 
