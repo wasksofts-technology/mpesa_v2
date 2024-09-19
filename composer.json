@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Wasksofts\\Mpesa\\v2\\": "src/"
+            "Wasksofts\\Mpesa_v2\\": "src/"
         }
     },
     "extra": {
