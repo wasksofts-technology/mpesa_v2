@@ -8,7 +8,7 @@ date_default_timezone_set("Africa/Nairobi");
  * Mpesa API library
  *
  * @package     Mpesa Class
- * @version     1.0.6
+ * @version     1.0.5
  * @license     MIT License Copyright (c) 2017 Wasksofts Technology
  */
 class Mpesa
@@ -24,6 +24,7 @@ class Mpesa
     private $initiator_name;
     private $initiator_password;
     private $callback_url;
+    private $so_callback_url;
     private $confirmation_url;
     private $validation_url;
     private $b2c_shortcode;
@@ -88,6 +89,9 @@ class Mpesa
                 break;
             case 'callback_url':
                 $this->callback_url = $value;
+                break;
+            case 'so_callback_url':
+                $this->so_callback_url = $value;
                 break;
             case 'confirmation_url':
                 $this->confirmation_url = $value;
@@ -430,7 +434,7 @@ class Mpesa
      * 
      * @return  null
      */
-    public function tax_remittance($amount, $account_prn, $result_url = 'tax', $timeout_url = 'tax', $Remarks = "OK", $kra_paybill = "572572")
+    public function tax_remittance($amount, $account_prn, $Remarks = "OK", $result_url = 'tax', $timeout_url = 'tax',  $kra_paybill = "572572")
     {
         $curl_post_data = array(
             "Initiator" => $this->initiator_name,
@@ -451,7 +455,34 @@ class Mpesa
         $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
     }
 
+    /**
+     * The Standing Order APIs enable teams to integrate with the standing order solution by initiating a request to create a standing order on the customer profile.
+     * $startdate YYYYMMDD
+     * 
+     * @param frequency  1 - One Off 2 - Daily 3 - Weekly 4 - Monthly 5 - Bi-Monthly 6 - Quarterly 7 - Half Year8 - Yearly
+     *
+     * @return  void
+     */
+    public function standing_order($name, $start_date, $end_date, $amount, $from, $AccountReference, $TransactionDesc, $Frequency)
+    {
+        $curl_post_data = array(
+            "StandingOrderName" => $name,
+            "StartDate" => $start_date,
+            "EndDate" => $end_date,
+            "BusinessShortCode" => strtolower($this->transaction_type) === 'paybill' ? $this->shortcode : $this->store_number,
+            "TransactionType" => "Standing Order Customer Pay Bill",
+            "ReceiverPartyIdentifierType" => strtolower($this->transaction_type) === 'paybill' ? "4" : "2",
+            "Amount" =>  $amount,
+            "PartyA" => $from,
+            "CallBackURL" => $this->so_callback_url,
+            "AccountReference" => $AccountReference,
+            "TransactionDesc" => $TransactionDesc,
+            "Frequency" => $Frequency
+        );
 
+        $url = $this->env('standingorder/v1/createStandingOrderExternal');
+        $this->http_post($url, ['Content-Type:application/json', 'charset=utf8', 'Authorization:Bearer ' . $this->oauth_token()], $curl_post_data);
+    }
 
     //-------------------------------------------------------------------------------------------------------------------------------------
     //Bill manager
