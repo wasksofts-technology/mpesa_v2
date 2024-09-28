@@ -8,7 +8,7 @@ date_default_timezone_set("Africa/Nairobi");
  * Mpesa API library
  *
  * @package     Mpesa Class
- * @version     1.0.5
+ * @version     1.0.6
  * @license     MIT License Copyright (c) 2017 Wasksofts Technology
  */
 class Mpesa
