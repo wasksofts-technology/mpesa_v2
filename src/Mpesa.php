@@ -136,13 +136,14 @@ class Mpesa
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
 
         $curl_response = curl_exec($curl);
+
         if (curl_errno($curl)) {
             return curl_error($curl);
         }
         curl_close($curl);
 
         if ($curl_response == true) {
-            return json_decode($curl_response)->access_token;
+            return isset(json_decode($curl_response)->access_token) ? json_decode($curl_response)->access_token : $curl_response;
         }
     }
 
@@ -192,7 +193,7 @@ class Mpesa
             'PartyA' => $phoneNumberSendingFund,
             'PartyB' => $this->shortcode,
             'CallBackURL' => $this->callback_url,
-            'AccountReference' => $AccountReference,
+            'AccountReference' => $AccountReference . $AccountReference,
             'TransactionDesc' => $TransactionDesc
         );
 
