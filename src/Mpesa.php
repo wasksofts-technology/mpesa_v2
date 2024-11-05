@@ -196,8 +196,8 @@ class Mpesa
             'PhoneNumber' => $phoneNumberSendingFund,
             'PartyA' => $phoneNumberSendingFund,
             'PartyB' => $this->shortcode,
-            'CallBackURL' => $this->callback_url,
-            'AccountReference' => $AccountReference . $AccountReference,
+            'CallBackURL' => $this->callback_url . $AccountReference,
+            'AccountReference' => $AccountReference,
             'TransactionDesc' => $TransactionDesc
         );
 
