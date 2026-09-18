@@ -79,7 +79,7 @@ $mpesa->STKPushQuery('ws_CO_191220191020363925');
 ```
 ## B2C (Business to Customer)
 
-b2c($amount, $commandId, $receiver, $remark, $result_url = 'b2c', $timeout_url = 'b2c', $occassion = null)
+$mpesa->b2c($amount, $commandId, $receiver, $remark, $result_url = 'b2c', $timeout_url = 'b2c', $occassion = null)
 
 Sends money from business to customer.
 ```
@@ -90,5 +90,38 @@ $mpesa->b2c(
     'Payment for services'
 );
 ```
+ 
+## B2B (Business to Business)
+Transfers funds between businesses.
+$mpesa->b2b($Amount, $PartyB, $commandId, $AccountReference, $Remarks, $result_url = 'b2b', $timeout_url = 'b2b')
 
+```
+$mpesa->b2b(
+    1000,
+    '600000',
+    'BusinessPayBill',
+    'ACCT-001',
+    'Transfer to supplier'
+);
+```
+
+## Transaction Reversal
+Reverses a B2B, B2C, or C2B transaction.
+$mpesa->reversal($Amount, $TransactionID, $Remarks, $result_url = 'reversal', $timeout_url = 'reversal', $Occasion = NULL)
+
+```
+$mpesa->reversal(
+    500,
+    'LKXXXX1234',
+    'Reversal request'
+);
+```
+
+## Account Balance
+Queries the account balance of a shortcode.
+Identifier Types: 1 (MSISDN), 2 (Till Number), 4 (Shortcode)
+$mpesa->accountbalance(4, 'Balance query');
+
+```
+$mpesa->accountbalance($IdentifierType, $Remarks, $result_url = 'balance', $timeout_url = 'balance')
 
