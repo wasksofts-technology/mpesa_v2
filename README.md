@@ -54,10 +54,10 @@ env	sandbox or production
 
 ## register URL
 Registers validation and confirmation URLs for a shortcode.  Cancelled/Completed
-```
+```php
 $mpesa->register_url('Completed',$version = "v1");
 
-```php
+```
 
 ## STK Push (Lipa na M-Pesa Online)
 STKPush($Amount, $phoneNumberSendingFund, $AccountReference, $TransactionDesc)
