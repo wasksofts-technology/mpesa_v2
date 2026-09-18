@@ -71,5 +71,24 @@ $response = $mpesa->STKPush(
 );
 
 ```
+## STKPush Status
+Checks the status of an STK Push transaction.
+
+```
+$mpesa->STKPushQuery('ws_CO_191220191020363925');
+```
+## B2C (Business to Customer)
+
+b2c($amount, $commandId, $receiver, $remark, $result_url = 'b2c', $timeout_url = 'b2c', $occassion = null)
+
+Sends money from business to customer.
+```
+$mpesa->b2c(
+    500,
+    'BusinessPayment',
+    '254708374149',
+    'Payment for services'
+);
+```
 
 
