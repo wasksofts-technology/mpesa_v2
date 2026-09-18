@@ -57,7 +57,7 @@ Registers validation and confirmation URLs for a shortcode.  Cancelled/Completed
 ```
 $mpesa->register_url('Completed',$version = "v1");
 
-```
+```php
 
 ## STK Push (Lipa na M-Pesa Online)
 STKPush($Amount, $phoneNumberSendingFund, $AccountReference, $TransactionDesc)
@@ -74,7 +74,7 @@ $response = $mpesa->STKPush(
 ## STKPush Status
 Checks the status of an STK Push transaction.
 
-```
+```php
 $mpesa->STKPushQuery('ws_CO_191220191020363925');
 ```
 ## B2C (Business to Customer)
@@ -204,8 +204,7 @@ single_invoice($reference, $billedfullname, $billedphoneNumber, $billedperiod, $
 
 Creates and sends a single e-invoice.
 
-```
-php
+```php
 
 $mpesa->single_invoice(
     'EXT-001',
