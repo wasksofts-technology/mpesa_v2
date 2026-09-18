@@ -8,7 +8,7 @@ This package seeks to help php developers implement the various Mpesa APIs witho
 ```
 
 ## Quick start
-```
+```php
  <?php
 require 'vendor/autoload.php';
 
@@ -52,7 +52,7 @@ logo_link	Bill Manager logo URL
 env	sandbox or production
 
 
-## register URL
+## Register URL
 Registers validation and confirmation URLs for a shortcode.  Cancelled/Completed
 ```php
 $mpesa->register_url('Completed',$version = "v1");
@@ -62,7 +62,7 @@ $mpesa->register_url('Completed',$version = "v1");
 ## STK Push (Lipa na M-Pesa Online)
 STKPush($Amount, $phoneNumberSendingFund, $AccountReference, $TransactionDesc)
 Initiates an STK push to a customer's phone.
-```
+```php
 $response = $mpesa->STKPush(
     100,                    // Amount
     '254708374149',         // Phone
@@ -82,7 +82,7 @@ $mpesa->STKPushQuery('ws_CO_191220191020363925');
 $mpesa->b2c($amount, $commandId, $receiver, $remark, $result_url = 'b2c', $timeout_url = 'b2c', $occassion = null)
 
 Sends money from business to customer.
-```
+```php
 $mpesa->b2c(
     500,
     'BusinessPayment',
@@ -95,7 +95,7 @@ $mpesa->b2c(
 Transfers funds between businesses.
 $mpesa->b2b($Amount, $PartyB, $commandId, $AccountReference, $Remarks, $result_url = 'b2b', $timeout_url = 'b2b')
 
-```
+```php
 $mpesa->b2b(
     1000,
     '600000',
@@ -109,7 +109,7 @@ $mpesa->b2b(
 Reverses a B2B, B2C, or C2B transaction.
 $mpesa->reversal($Amount, $TransactionID, $Remarks, $result_url = 'reversal', $timeout_url = 'reversal', $Occasion = NULL)
 
-```
+```php
 $mpesa->reversal(
     500,
     'LKXXXX1234',
@@ -122,7 +122,7 @@ Queries the account balance of a shortcode.
 Identifier Types: 1 (MSISDN), 2 (Till Number), 4 (Shortcode)
 $mpesa->accountbalance(4, 'Balance query');
 
-```
+```php
 $mpesa->accountbalance($IdentifierType, $Remarks, $result_url = 'balance', $timeout_url = 'balance')
 
 ```
@@ -131,7 +131,7 @@ Checks the status of any transaction.
 Identifier Types: 1 (MSISDN), 2 (Till Number), 4 (Shortcode)
 $mpesa->transaction_status($TransactionID, $Remarks, $indentifier = 4, $result_url = "transaction_status", $timeout_url = "transaction_status", $Occassion = NULL)
 
-```
+```php
 $mpesa->transaction_status(
     'LKXXXX1234',
     'Status check'
@@ -144,7 +144,7 @@ Generates a dynamic M-Pesa QR code.
 Formats: 1 (Image), 2 (QR String), 3 (Binary), 4 (PDF)
 $mpesa->generate_qrcode($amount, $reference, $MerchantName = 'SERVICE', $qrformat = 1, $trxcode = 'PG')
 
-```
+```php
 $mpesa->generate_qrcode(
     100,
     'INV-001',
@@ -156,7 +156,7 @@ $mpesa->generate_qrcode(
 Remits tax to Kenya Revenue Authority (KRA).
 $mpesa->tax_remittance($amount, $account_prn, $Remarks = "OK", $result_url = 'tax', $timeout_url = 'tax', $kra_paybill = "572572")
 
-```
+```php
 $mpesa->tax_remittance(
     2500,
     'PRN-123456',
@@ -169,7 +169,7 @@ Creates a recurring standing order on a customer profile.
 $mpesa->standing_order($name, $start_date, $end_date, $amount, $from, $AccountReference, $TransactionDesc, $Frequency)
 Frequency: 1 One-off, 2 Daily, 3 Weekly, 4 Monthly, 5 Bi-Monthly, 6 Quarterly, 7 Half Year, 8 Yearly
 
-```
+```php
 $mpesa->standing_order(
     'Monthly Subscription',
     '20240101',
@@ -186,8 +186,8 @@ $mpesa->standing_order(
 optin_biller($email, $reminders = 1)
 
 Opts a business into Bill Manager.
-php
-```
+
+```php
 $mpesa->optin_biller('billing@example.com');
 
 ```
@@ -196,7 +196,7 @@ optin_update($email, $reminders = 1)
 Updates Bill Manager onboarding details.
 php
 
-```
+```php
 $mpesa->optin_update('newemail@example.com');
 ```
 
@@ -221,16 +221,14 @@ $mpesa->single_invoice(
 bulk_invoicing($invoiceArray)
 
 Creates and sends multiple invoices at once.
-```
-php
-
+```php
 $mpesa->bulk_invoicing([
     ['externalReference' => 'EXT-001', /* ... */],
     ['externalReference' => 'EXT-002', /* ... */],
 ]);
 ````
 
-reconciliation($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+$mpesa->reconciliation($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
 
 Reconciles a payment against an invoice.
 ```php
@@ -246,7 +244,7 @@ $mpesa->reconciliation(
     'EXT-001'
 );
 ```
-update_invoice_data($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+$mpesa->update_invoice_data($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
 
 Updates existing invoice data.
 ```php
