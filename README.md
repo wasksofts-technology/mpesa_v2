@@ -27,24 +27,26 @@ $mpesa->config('env', 'sandbox'); // or 'production'
 ## Configuration
 Set configuration values using config($key, $value).
 
-Key	Description
-consumer_key	Daraja app consumer key
-consumer_secret	Daraja app consumer secret
-transaction_type	paybill or buygoods
-shortcode	Paybill / Business shortcode
-store_number	Till number (for Buy Goods)
-b2c_shortcode	B2C shortcode
-b2b_shortcode	B2B shortcode
-initiator_name	API initiator username
-initiator_password	API initiator password
-pass_key	Lipa na M-Pesa passkey
-security_credential	Pre-generated security credential (optional)
-callback_url	STK Push callback URL base
-so_callback_url	Standing Order callback URL
-confirmation_url	C2B confirmation URL
-validation_url	C2B validation URL
-result_url	Base URL for result callbacks
-timeout_url	Base URL for timeout callbacks
+|Key |	Description |
+| ------------- | ------------- |
+| consumer_key |	Daraja app consumer key |
+| consumer_secret |	Daraja app consumer secret|
+| transaction_type |		paybill or buygoods |
+| shortcode	 |	Paybill /Business shortcode |
+| store_number	 |	Till number (for Buy Goods) |
+| b2c_shortcode |		B2C shortcode |
+| b2b_shortcode |		B2B shortcode |
+| initiator_name |		API initiator username |
+| initiator_password |		API initiator password |
+| pass_key	 |	Lipa na M-Pesa passkey |
+| security_credential |		Pre-generated security credential (optional) |
+| callback_url	 |	STK Push callback URL base |
+| so_callback_url	 |	Standing Order callback URL |
+| confirmation_url |		C2B confirmation URL |
+| validation_url	 |	C2B validation URL |
+| result_url |		Base URL for result callbacks |
+| timeout_url	 |	Base URL for timeout callbacks |
+ 
 official_contact	Bill Manager official contact
 logo_link	Bill Manager logo URL
 env	sandbox or production
