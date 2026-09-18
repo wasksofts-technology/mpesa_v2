@@ -125,3 +125,134 @@ $mpesa->accountbalance(4, 'Balance query');
 ```
 $mpesa->accountbalance($IdentifierType, $Remarks, $result_url = 'balance', $timeout_url = 'balance')
 
+```
+## Transaction Status
+Checks the status of any transaction.
+Identifier Types: 1 (MSISDN), 2 (Till Number), 4 (Shortcode)
+$mpesa->transaction_status($TransactionID, $Remarks, $indentifier = 4, $result_url = "transaction_status", $timeout_url = "transaction_status", $Occassion = NULL)
+
+```
+$mpesa->transaction_status(
+    'LKXXXX1234',
+    'Status check'
+);
+
+```
+
+## QR Code Generation
+Generates a dynamic M-Pesa QR code.
+Formats: 1 (Image), 2 (QR String), 3 (Binary), 4 (PDF)
+$mpesa->generate_qrcode($amount, $reference, $MerchantName = 'SERVICE', $qrformat = 1, $trxcode = 'PG')
+
+```
+$mpesa->generate_qrcode(
+    100,
+    'INV-001',
+    'MyShop',
+    2
+);
+```
+## Tax Remittance
+Remits tax to Kenya Revenue Authority (KRA).
+$mpesa->tax_remittance($amount, $account_prn, $Remarks = "OK", $result_url = 'tax', $timeout_url = 'tax', $kra_paybill = "572572")
+
+```
+$mpesa->tax_remittance(
+    2500,
+    'PRN-123456',
+    'Tax payment'
+);
+
+```
+## Standing Orders
+Creates a recurring standing order on a customer profile.
+$mpesa->standing_order($name, $start_date, $end_date, $amount, $from, $AccountReference, $TransactionDesc, $Frequency)
+Frequency: 1 One-off, 2 Daily, 3 Weekly, 4 Monthly, 5 Bi-Monthly, 6 Quarterly, 7 Half Year, 8 Yearly
+
+```
+$mpesa->standing_order(
+    'Monthly Subscription',
+    '20240101',
+    '20241231',
+    500,
+    '254708374149',
+    'SUB-001',
+    'Monthly subscription fee',
+    4
+);
+```
+
+## Bill Manager
+optin_biller($email, $reminders = 1)
+
+Opts a business into Bill Manager.
+php
+```
+$mpesa->optin_biller('billing@example.com');
+
+```
+optin_update($email, $reminders = 1)
+
+Updates Bill Manager onboarding details.
+php
+
+```
+$mpesa->optin_update('newemail@example.com');
+```
+
+single_invoice($reference, $billedfullname, $billedphoneNumber, $billedperiod, $invoiceName, $dueDate, $accountRef, $amount)
+
+Creates and sends a single e-invoice.
+php
+
+$mpesa->single_invoice(
+    'EXT-001',
+    'John Doe',
+    '254708374149',
+    '2024-01',
+    'January Bill',
+    '2024-01-31',
+    'ACC-001',
+    1500
+);
+
+bulk_invoicing($invoiceArray)
+
+Creates and sends multiple invoices at once.
+php
+
+$mpesa->bulk_invoicing([
+    ['externalReference' => 'EXT-001', /* ... */],
+    ['externalReference' => 'EXT-002', /* ... */],
+]);
+
+reconciliation($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+
+Reconciles a payment against an invoice.
+php
+
+$mpesa->reconciliation(
+    '2024-01-15',
+    1500,
+    'ACC-001',
+    'TXN12345',
+    '254708374149',
+    'John Doe',
+    'January Bill',
+    'EXT-001'
+);
+
+update_invoice_data($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
+
+Updates existing invoice data.
+php
+
+$mpesa->update_invoice_data(/* same signature as reconciliation */);
+
+cancel_single_invoice($reference)
+
+Cancels a single invoice using its external reference.
+php
+
+$mpesa->cancel_single_invoice('EXT-001');
+```
