@@ -203,6 +203,8 @@ $mpesa->optin_update('newemail@example.com');
 single_invoice($reference, $billedfullname, $billedphoneNumber, $billedperiod, $invoiceName, $dueDate, $accountRef, $amount)
 
 Creates and sends a single e-invoice.
+
+```
 php
 
 $mpesa->single_invoice(
@@ -215,21 +217,24 @@ $mpesa->single_invoice(
     'ACC-001',
     1500
 );
+```
 
 bulk_invoicing($invoiceArray)
 
 Creates and sends multiple invoices at once.
+```
 php
 
 $mpesa->bulk_invoicing([
     ['externalReference' => 'EXT-001', /* ... */],
     ['externalReference' => 'EXT-002', /* ... */],
 ]);
+````
 
 reconciliation($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
 
 Reconciles a payment against an invoice.
-php
+```php
 
 $mpesa->reconciliation(
     '2024-01-15',
@@ -241,18 +246,17 @@ $mpesa->reconciliation(
     'January Bill',
     'EXT-001'
 );
-
+```
 update_invoice_data($payment_date, $paidAmmount, $actReference, $transactionId, $phoneNumber, $fullName, $invoiceName, $reference)
 
 Updates existing invoice data.
-php
-
+```php
 $mpesa->update_invoice_data(/* same signature as reconciliation */);
-
-cancel_single_invoice($reference)
+```
+$mpesa->cancel_single_invoice($reference)
 
 Cancels a single invoice using its external reference.
-php
+```php
 
 $mpesa->cancel_single_invoice('EXT-001');
 ```
