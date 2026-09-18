@@ -223,8 +223,8 @@ bulk_invoicing($invoiceArray)
 Creates and sends multiple invoices at once.
 ```php
 $mpesa->bulk_invoicing([
-    ['externalReference' => 'EXT-001', /* ... */],
-    ['externalReference' => 'EXT-002', /* ... */],
+    ['externalReference' => 'EXT-001'],
+    ['externalReference' => 'EXT-002'],
 ]);
 ````
 
