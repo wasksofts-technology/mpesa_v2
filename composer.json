@@ -1,6 +1,6 @@
 {
     "name": "wasksofts-technology/mpesa_v2",
-    "description": "A simple Mpesa API library.",
+    "description": "A simple Mpesa PHP library.",
     "type": "library",
     "license": "MIT",
     "authors": [
